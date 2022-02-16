@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "hardhat/console.sol" ;
-
-
 
 contract vnc is  ERC20 {
 
@@ -106,15 +103,16 @@ contract vnc is  ERC20 {
 
 
         }
+	require(tokenTranferForUser + tokenMint > 0, "something wrong with tokenBought");
+	require(_moneyInPool-currentMoney-amount < 10**17 && amount + currentMoney-_moneyInPool < 10**17, "something wrong with money");
         _moneyInPool = currentMoney + amount;
 
-	    if (tokenMint > 0 )  { //  ICO or Both ICO and IDO
-            _mint(address(this), tokenMint*2);
-            IERC20(address(this)).transfer(msg.sender, (tokenTranferForUser + tokenMint));
-	    }
-	    if (tokenMint  == 0)  { // Only IDO
-            IERC20(address(this)).transfer(msg.sender, tokenTranferForUser);
-	    }
+	if (tokenMint > 0 )  { //  ICO or Both ICO and IDO
+    		_mint(address(this), tokenMint*2);
+	}
+	_transfer(address(this), msg.sender, (tokenTranferForUser + tokenMint));
+	require(_moneyInPool<=checkVUSD(), "something wrong with _moneyInPool");
+	require(_tokenInPool<=balanceOf(address(this)), "something wrong with _tokenInPool");
         emit buy(msg.sender, amount);
     }
 
@@ -123,7 +121,7 @@ contract vnc is  ERC20 {
         require(amount > 0, "Please input amount greater than 0");
         require(approve(address(this),amount), "failed" );
         require(transferFrom(msg.sender, address(this),amount), "Transfer failed");
-	    uint currentMoney = _moneyInPool;
+	uint currentMoney = _moneyInPool;
         uint moneyInpool = (_tokenInPool * _moneyInPool) / (_tokenInPool + amount);
         uint receivedMoney = currentMoney - moneyInpool ;
         _moneyInPool -= receivedMoney;
@@ -135,6 +133,8 @@ contract vnc is  ERC20 {
         if (state == statusEnum.subIDO) {
             subIDOSold +=amount;
         }
+	require(_moneyInPool<=checkVUSD(), "something wrong with _moneyInPool");
+	require(_tokenInPool<=balanceOf(address(this)), "something wrong with _tokenInPool");
 
         emit sell(msg.sender, amount);
     }
