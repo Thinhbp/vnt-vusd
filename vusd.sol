@@ -20,7 +20,8 @@ contract vusd is  ERC20 {
     uint moneyICanWithdraw = VNC.moneyIcanUse();
 
 
-    address  USDC = 0x38558FB189f9fB0a6B455064477627Fdbe3d0f1c;
+    address  USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
+    // 0x38558FB189f9fB0a6B455064477627Fdbe3d0f1c For testnet
 
     event buy(address _address, uint _amount);
     event sell(address _address, uint _amount);
