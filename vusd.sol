@@ -90,7 +90,6 @@ contract vusd is  ERC20 {
 
 } 
 
-
 abstract contract vnc {
     function moneyIcanUse() public virtual  returns(uint);
 }
