@@ -35,7 +35,7 @@ contract vnc is  ERC20 {
         return IERC20(VUSD).balanceOf(address(this)) ;
     }
 
-    function moneyIcanUse() public view returns(uint){
+    function moneyCanWithdraw() public view returns(uint){
         return (_tokenInPool * _moneyInPool) / totalSupply();
     }
 
