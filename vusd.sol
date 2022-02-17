@@ -17,11 +17,11 @@ contract vusd is  ERC20 {
 
     address public addressVNC;
 
-    uint moneyICanWithdraw = VNC.moneyIcanUse();
+
+ 
 
 
-    address  USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
-    // 0x38558FB189f9fB0a6B455064477627Fdbe3d0f1c For testnet
+    address  USDC = 0x38558FB189f9fB0a6B455064477627Fdbe3d0f1c;
 
     event buy(address _address, uint _amount);
     event sell(address _address, uint _amount);
@@ -30,18 +30,18 @@ contract vusd is  ERC20 {
 
 
 
-    function buyVUSD(uint _amount) public {
-        require(statusVusd, "Contract is maintaining");
+    function buyToken(uint _amount) public {
+        require(status, "Contract is maintaining");
         require(_amount > 0);
-        require(IERC20(USDC).allowance(msg.sender, address(this)) == _amount*10**18,"You must approve in web3");
-        require(IERC20(USDC).transferFrom(msg.sender, address(this),_amount*10**18), "Transfer failed");
+        //require(IERC20(USDC).allowance(msg.sender, address(this)) == _amount*10**18,"You must approve in web3");
+        //require(IERC20(USDC).transferFrom(msg.sender, address(this),_amount*10**18), "Transfer failed");
         _mint(msg.sender, _amount*10**18);
         emit buy(msg.sender, _amount);
 
     }
 
-    function sellVUSD(uint _amount) public {
-        require(statusVusd, "Contract is maintaining");
+    function sellToken(uint _amount) public {
+        require(status, "Contract is maintaining");
         require(_amount > 0);
         require(IERC20(USDC).balanceOf(address(this))>= _amount*10**18, "Balance is not enough");
         require(transfer(address(this), _amount*10**18), "Transfer failed");
@@ -50,17 +50,17 @@ contract vusd is  ERC20 {
 
     }
 
-     function withdraw() public {
+    function withdraw() public {
         require(msg.sender == addresswithdraw,"permission denied");
-        uint moneyCanWithdraw = vnc(addressVNC).moneyCanWithdraw();
-        require(moneyCanWithdraw >= moneyWithdrawed);
+        uint moneyCanWithdraw = vnc(addressVNC).moneyIcanUse();
+        require(moneyCanWithdraw > moneyWithdrawed);
         IERC20(USDC).transfer(msg.sender, (moneyCanWithdraw - moneyWithdrawed));
         moneyWithdrawed += (moneyCanWithdraw - moneyWithdrawed);
     }
     
     function changeWithdraw(address _address) public {
         require(_address != address(0), "Address is invalid");
-        require(msg.sender == ownerVusd,"permission denied");
+        require(msg.sender == owner,"permission denied");
         addresswithdraw = _address;
     }
         
@@ -69,21 +69,21 @@ contract vusd is  ERC20 {
        return IERC20(_token).balanceOf(address(this));
     }
     
-    function changeStatusVusd(bool _status) public {
-        require(msg.sender == ownerVusd,"permission denied");
-        statusVusd = _status;
+    function changeStatus(bool _status) public {
+        require(msg.sender == owner,"permission denied");
+        status = _status;
         emit changestatues(_status);
     }
 
-    function changeOwnerVusd(address _address) public {
-        require(msg.sender == ownerVusd,"permission denied");
+    function changeOwner(address _address) public {
+        require(msg.sender == owner,"permission denied");
         require(_address != address(0), "Address is invalid");
-        ownerVusd = _address;
+        owner = _address;
         emit changeowner(_address);
     }
 
     function updateVNCAddress(address _address) public {
-        require(msg.sender == ownerVusd);
+        require(msg.sender == owner);
         addressVNC = _address;
 
     }
@@ -93,3 +93,4 @@ contract vusd is  ERC20 {
 abstract contract vnc {
     function moneyIcanUse() public virtual  returns(uint);
 }
+
