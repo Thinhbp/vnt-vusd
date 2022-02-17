@@ -7,7 +7,7 @@ contract vnc is  ERC20 {
     constructor() public ERC20("vnc", "VNC") {
     }
 
-    address VUSD = 0x968fAC4fd079D6527e7305FdAf9437bB37067Da0;
+    address VUSD = 0xCD38FD5EdDe2E0009BF7eC41c256985B820ea1C8;
 
     bool status ; 
     address owner = msg.sender;
@@ -56,23 +56,25 @@ contract vnc is  ERC20 {
         uint buyNowCost = 0;
         uint buyNowToken;
 
+        uint moneyLeft = amount;
+
         uint tokenMint = 0;
         uint tokenTranferForUser = 0;
 
         uint currentMoney = _moneyInPool ;
 
-        while (amount  >  0) {
+        while (moneyLeft  >  0) {
 
             if (state == statusEnum.ICO) {
                 nextBreak = (tokenBeforeICO[currentStep] + 5 * 10**5 * 10 **18) - _tokenInPool;
-                assumingToken = amount * 100 / icoPrice[currentStep] ;
+                assumingToken = moneyLeft * 100 / icoPrice[currentStep] ;
             }else{
                 nextBreak = state == statusEnum.subIDO ? subIDOSold : (_tokenInPool - tokenBeforeICO[currentStep + 1]) ;
-                assumingToken = _tokenInPool - (_tokenInPool * _moneyInPool) / (_moneyInPool + amount);
+                assumingToken = _tokenInPool - (_tokenInPool * _moneyInPool) / (_moneyInPool + moneyLeft);
                 
                 }
             buyNowToken = nextBreak >= assumingToken ? assumingToken : nextBreak;
-            buyNowCost = amount; 
+            buyNowCost = moneyLeft; 
             
 
             if ( assumingToken>nextBreak ){
@@ -101,18 +103,17 @@ contract vnc is  ERC20 {
 
             } 
 
-            amount = amount - buyNowCost;
+            moneyLeft = moneyLeft - buyNowCost;
         }
-	require(tokenTranferForUser + tokenMint > 0, "something wrong with tokenBought");
-	require(_moneyInPool-currentMoney-amount < 10**17 && amount + currentMoney-_moneyInPool < 10**17, "something wrong with money");
-        _moneyInPool = currentMoney + amount;
+	    require(tokenTranferForUser + tokenMint > 0, "something wrong with tokenBought");
+            require(_moneyInPool-currentMoney==amount, "something wrong with money");
 
-	if (tokenMint > 0 )  { //  ICO or Both ICO and IDO
+	    if (tokenMint > 0 )  { //  ICO or Both ICO and IDO
     		_mint(address(this), tokenMint*2);
-	}
-	_transfer(address(this), msg.sender, (tokenTranferForUser + tokenMint));
-	require(_moneyInPool<=checkVUSD(), "something wrong with _moneyInPool");
-	require(_tokenInPool<=balanceOf(address(this)), "something wrong with _tokenInPool");
+	    }
+	    _transfer(address(this), msg.sender, (tokenTranferForUser + tokenMint));
+	    require(_moneyInPool<=checkVUSD(), "something wrong with _moneyInPool");
+	    require(_tokenInPool<=balanceOf(address(this)), "something wrong with _tokenInPool");
         emit buy(msg.sender, amount);
     }
 
@@ -121,7 +122,7 @@ contract vnc is  ERC20 {
         require(amount > 0, "Please input amount greater than 0");
         require(approve(address(this),amount), "failed" );
         require(transferFrom(msg.sender, address(this),amount), "Transfer failed");
-	uint currentMoney = _moneyInPool;
+	    uint currentMoney = _moneyInPool;
         uint moneyInpool = (_tokenInPool * _moneyInPool) / (_tokenInPool + amount);
         uint receivedMoney = currentMoney - moneyInpool ;
         _moneyInPool -= receivedMoney;
@@ -133,8 +134,8 @@ contract vnc is  ERC20 {
         if (state == statusEnum.subIDO) {
             subIDOSold +=amount;
         }
-	require(_moneyInPool<=checkVUSD(), "something wrong with _moneyInPool");
-	require(_tokenInPool<=balanceOf(address(this)), "something wrong with _tokenInPool");
+	    require(_moneyInPool<=checkVUSD(), "something wrong with _moneyInPool");
+	    require(_tokenInPool<=balanceOf(address(this)), "something wrong with _tokenInPool");
 
         emit sell(msg.sender, amount);
     }
