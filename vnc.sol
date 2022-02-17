@@ -101,7 +101,7 @@ contract vnc is  ERC20 {
 
             } 
 
-
+            amount = amount - buyNowCost;
         }
 	require(tokenTranferForUser + tokenMint > 0, "something wrong with tokenBought");
 	require(_moneyInPool-currentMoney-amount < 10**17 && amount + currentMoney-_moneyInPool < 10**17, "something wrong with money");
