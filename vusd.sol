@@ -34,9 +34,9 @@ contract vusd is  ERC20 {
     function buyToken(uint _amount) public {
         require(status, "Contract is maintaining");
         require(_amount > 0);
-        require(IERC20(USDC).allowance(msg.sender, address(this)) == _amount*10**18,"You must approve in web3");
-        require(IERC20(USDC).transferFrom(msg.sender, address(this),_amount*10**18), "Transfer failed");
-        _mint(msg.sender, _amount*10**18);
+        require(IERC20(USDC).allowance(msg.sender, address(this)) == _amount,"You must approve in web3");
+        require(IERC20(USDC).transferFrom(msg.sender, address(this),_amount), "Transfer failed");
+        _mint(msg.sender, _amount);
         emit buy(msg.sender, _amount);
 
     }
@@ -44,9 +44,9 @@ contract vusd is  ERC20 {
     function sellToken(uint _amount) public {
         require(status, "Contract is maintaining");
         require(_amount > 0);
-        require(IERC20(USDC).balanceOf(address(this))>= _amount*10**18, "Balance is not enough");
-        require(transfer(address(this), _amount*10**18), "Transfer failed");
-        IERC20(USDC).transfer(msg.sender, _amount*10**18);
+        require(IERC20(USDC).balanceOf(address(this))>= _amount, "Balance is not enough");
+        require(transfer(address(this), _amount), "Transfer failed");
+        IERC20(USDC).transfer(msg.sender, _amount);
         emit sell(msg.sender, _amount);
 
     }
