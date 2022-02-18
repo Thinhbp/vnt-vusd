@@ -15,7 +15,7 @@ contract vusd is  ERC20 {
 
     uint moneyWithdrawed = 0;
 
-    address public addressVNC;
+    address public addressVAN;
 
 
  
@@ -53,7 +53,7 @@ contract vusd is  ERC20 {
 
     function withdraw() public {
         require(msg.sender == addresswithdraw,"permission denied");
-        uint moneyCanWithdraw = vnc(addressVNC).moneyCanWithdraw();
+        uint moneyCanWithdraw = van(addressVAN).moneyCanWithdraw();
         require(moneyCanWithdraw > moneyWithdrawed);
         IERC20(USDC).transfer(msg.sender, (moneyCanWithdraw - moneyWithdrawed));
         moneyWithdrawed += (moneyCanWithdraw - moneyWithdrawed);
@@ -83,15 +83,15 @@ contract vusd is  ERC20 {
         emit changeowner(_address);
     }
 
-    function updateVNCAddress(address _address) public {
+    function updateVANAddress(address _address) public {
         require(msg.sender == owner);
-        addressVNC = _address;
+        addressVAN = _address;
 
     }
 
 } 
 
-abstract contract vnc {
+abstract contract van {
     function moneyCanWithdraw() public virtual  returns(uint);
 }
 
