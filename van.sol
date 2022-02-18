@@ -2,9 +2,9 @@
 pragma solidity ^0.8.10;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract vnc is  ERC20 {
+contract van is  ERC20 {
 
-    constructor() public ERC20("vnc", "VNC") {
+    constructor() public ERC20("van", "VAN") {
     }
 
     address VUSD = 0xCD38FD5EdDe2E0009BF7eC41c256985B820ea1C8;
@@ -24,12 +24,9 @@ contract vnc is  ERC20 {
     uint[29]  tokenBeforeICO = [0,353553390593273762200422,603553390593273762200422,780330085889910643300633,905330085889910643300633,993718433538229083850739,1056218433538229083850739,1100412607362388304125792,1131662607362388304125792,1153759694274467914263318,1169384694274467914263318,1180433237730507719332081,1188245737730507719332081,1193770009458527621866463,1197676259458527621866463,1200438395322537573133654,1202391520322537573133654,1203772588254542548767249,1204749150754542548767249,1205439684720545036584047,1205927965970545036584047,1206273232953546280492445,1206517373578546280492445,1206690007070046902446645,1206812077382546902446645,1206898394128297213423745,1206959429284547213423745,1207002587657422368912294,1207033105235547368912294] ;
     event buy(address _address, uint _amount);
     event sell(address _address, uint _amount);
-    event changestatues(bool _status);
+    event changestatus(bool _status);
     event changeowner(address _address);
 
-    function currentPrice() public view returns (uint) {
-        return _tokenInPool == 0 ? 0 :  _moneyInPool* 1000 / _tokenInPool  ; // *1000
-    }
    
     function checkVUSD() public view returns(uint) {
         return IERC20(VUSD).balanceOf(address(this)) ;
@@ -143,7 +140,7 @@ contract vnc is  ERC20 {
     function changeStatus(bool _status) public {
         require(msg.sender == owner,"permission denied");
         status = _status;
-        emit changestatues(_status);
+        emit changestatus(_status);
     }
 
     function changeOwner(address _address) public {
